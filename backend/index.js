@@ -33,7 +33,7 @@ const API_BASE = process.env.API_BASE_URL || 'https://generativelanguage.googlea
 // different model names. Default to text-bison-001 which is a common sample
 // model name for the Google Generative Language API; change this to your
 // provider/model if required.
-const MODEL_NAME = process.env.MODEL_NAME || 'text-bison-001';
+const MODEL_NAME = process.env.MODEL_NAME || 'gemini-2.5-flash';
 
 // Local mock mode: set MOCK_TRANSLATION=true to bypass upstream calls
 const MOCK_TRANSLATION = (process.env.MOCK_TRANSLATION || '').toLowerCase() === 'true';
