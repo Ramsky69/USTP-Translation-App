@@ -55,7 +55,7 @@ app.post('/api/translate', async (req, res) => {
 
   // Example request body for a Gemini-style generate endpoint.
   // Adjust the structure to match the exact API your account provides.
-  const prompt = `Translate the following text into ${target} and keep the tone natural. Return only the translation:\n\n${text}`;
+  const prompt = `Translate the following text into ${target} and keep the tone natural. Return only the translation and make it english readable for every language:\n\n${text}`;
 
   // Removed unused 'payload' object here
   
