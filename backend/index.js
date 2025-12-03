@@ -96,7 +96,7 @@ app.post('/api/translate', async (req, res) => {
         contents: [
             { role: "user", parts: [{ text: prompt }] }
         ],
-        config: {
+         generationConfig: {
             maxOutputTokens: 800
         }
     };
