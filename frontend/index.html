@@ -1,0 +1,98 @@
+<!-- frontend/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Translator — Gemini 2.5 (Demo)</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6">
+    <h1 class="text-2xl font-semibold mb-4">AI Translator — Gemini 2.5 (Demo)</h1>
+
+    <label class="block mb-2 text-sm font-medium text-gray-700">Source text</label>
+    <textarea id="inputText" rows="6" class="w-full p-3 border rounded-lg mb-4" placeholder="Type or paste text to translate..."></textarea>
+
+    <div class="flex gap-3 mb-4">
+      <select id="targetLang" class="p-2 border rounded-lg">
+        <option value="Filipino">Filipino</option>
+        <option value="English">English</option>
+        <option value="Spanish">Spanish</option>
+        <option value="Japanese">Japanese</option>
+        <option value="Korean">Korean</option>
+      </select>
+
+      <button id="translateBtn" class="ml-auto bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:opacity-90">Translate</button>
+    </div>
+
+    <div id="status" class="text-sm text-gray-500 mb-3"></div>
+
+    <label class="block mb-2 text-sm font-medium text-gray-700">Translation</label>
+    <div id="output" class="min-h-[120px] p-3 border rounded-lg bg-gray-50"></div>
+
+    <div class="mt-4 flex gap-3">
+      <button id="copyBtn" class="px-3 py-2 border rounded-lg">Copy</button>
+      <button id="clearBtn" class="px-3 py-2 border rounded-lg">Clear</button>
+    </div>
+
+    <p class="mt-4 text-xs text-gray-500">Note: This demo frontend expects the backend API at <code>http://localhost:3000/api/translate</code>.</p>
+  </div>
+
+  <script>
+    const translateBtn = document.getElementById('translateBtn');
+    const inputText = document.getElementById('inputText');
+    const targetLang = document.getElementById('targetLang');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    translateBtn.addEventListener('click', async () => {
+      const text = inputText.value.trim();
+      const target = targetLang.value;
+      if (!text) return alert('Enter some text to translate');
+
+      status.textContent = 'Translating...';
+      output.textContent = '';
+
+      try {
+        const res = await fetch('http://localhost:3000/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, target })
+        });
+        const data = await res.json();
+        if (data.translation) {
+          output.textContent = data.translation;
+        } else if (data.error) {
+          output.textContent = 'Error: ' + data.error;
+        } else {
+          output.textContent = JSON.stringify(data);
+        }
+      } catch (err) {
+        output.textContent = 'Network error: ' + err.message;
+      } finally {
+        status.textContent = '';
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = output.textContent;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('Copied!');
+      } catch (e) {
+        alert('Copy failed');
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      inputText.value = '';
+      output.textContent = '';
+    });
+  </script>
+</body>
+</html>

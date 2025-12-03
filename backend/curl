@@ -1,0 +1,30 @@
+# Example requests for the backend /api/translate endpoint
+
+This file contains example requests you can run locally to exercise the backend.
+
+Notes:
+- The project ships with an Express backend (listen: 3000) — make sure the server is running first.
+- The backend forwards requests to a generative AI API (Gemini/GenAI). If the configured API key is not allowed to call the upstream method you'll get a 401/403 upstream error.
+
+PowerShell (recommended on Windows):
+
+```powershell
+# Replace the JSON body as needed
+$body = '{"text":"Hello world","target":"es"}'
+Invoke-RestMethod -Method Post -Uri 'http://localhost:3000/api/translate' -ContentType 'application/json' -Body $body
+```
+
+cmd.exe (Windows — escape carefully):
+
+```cmd
+curl -X POST "http://localhost:3000/api/translate" -H "Content-Type: application/json" -d "{\"text\":\"Hello world\",\"target\":\"es\"}"
+```
+
+POSIX shells / WSL / git-bash:
+
+```bash
+curl -X POST http://localhost:3000/api/translate -H "Content-Type: application/json" -d '{"text":"Hello world","target":"es"}'
+```
+
+If you see an upstream error like "Method doesn't allow unregistered callers" or an authentication error, check `backend/.env` and ensure the API key you set is valid for the endpoint you are calling.
+
