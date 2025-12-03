@@ -58,7 +58,7 @@
       output.textContent = '';
 
       try {
-        const res = await fetch('http://localhost:3000/api/translate', {
+        const res = await fetch('https://ustp-translation-app.onrender.com/api/translate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text, target })
