@@ -1,6 +1,4 @@
 // backend/index.js
-// Simple Express backend that forwards translation requests to Gemini-like API.
-// IMPORTANT: Put your real API key in a .env file (GEMINI_API_KEY). Do NOT commit keys.
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
@@ -23,10 +21,6 @@ app.use((req, res, next) => {
 });
 
 const API_KEY = process.env.GEMINI_API_KEY;
-// If you have an API key (not an OAuth bearer token) you can set USE_API_KEY=true
-// to instruct the server to pass the key as a query parameter ( ?key= ) instead
-// of using the Authorization: Bearer header. Many Google Cloud endpoints accept
-// API keys this way.
 const USE_API_KEY = (process.env.USE_API_KEY || '').toLowerCase() === 'true';
 const API_BASE = process.env.API_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta';
 // Allow overriding the target model from env — some projects / accounts expose
@@ -53,13 +47,10 @@ app.post('/api/translate', async (req, res) => {
    return res.json({ translation });
   }
 
-  // Example request body for a Gemini-style generate endpoint.
   // Adjust the structure to match the exact API your account provides.
-  const prompt = `Translate the following text into ${target} and keep the tone natural. Return only the translation. The translation must be in alphabet for non alphabet style words NEVER EVER GIVE RAW TRANSLATION ONLY THE ALPHABET STYLED TRANSLATION:\n\n${text}`;
+  const prompt = `Translate the following text into ${target} and keep the tone natural. Return only the translation. The translation must be in alphabet for non alphabet style words NEVER EVER GIVE RAW TRANSLATION ONLY THE ALPHABET STYLED TRANSLATION Also never read a text or emoji FILE!! if read: it must say"This is a unsuported Text Please refresh and try again":\n\n${text}`;
 
-  // Removed unused 'payload' object here
   
-  // Build headers and URL depending on whether user wants to pass an
   // API key in the URL or use OAuth2 bearer token in Authorization header.
   const headers = { 'Content-Type': 'application/json' };
   
@@ -71,7 +62,6 @@ app.post('/api/translate', async (req, res) => {
   let url = candidateUrls[0];
 
   if (API_KEY) {
-   // FIX: Use the 'x-goog-api-key' header for the Generative Language API
    headers['x-goog-api-key'] = API_KEY;
   }
 
@@ -85,8 +75,6 @@ app.post('/api/translate', async (req, res) => {
     }
   };
 
-  // Try each candidate URL until we get a non-404 response or we run out
-  // of options.
   let response = null;
   let lastErrorText = null;
   for (const candidate of candidateUrls) {
